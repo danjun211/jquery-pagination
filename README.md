@@ -2,6 +2,7 @@
 페이징 정보로 클라이언트 사이드 렌더링을 하도록 도와주는 라이브러리
 
 ## 사용법
+- 페이징 HTML의 클래스 이름을 아래와 같이 설정한다.
 ```
   <ul id="pagination" class="paging_group">
       <li class="page_start"><<</li>
@@ -10,6 +11,14 @@
       <li class="page_next">></li>
       <li class="page_end">>></li>
   </ul>
+```
+- 스크립트를 선언한다.
+```
+    <script
+    src="https://code.jquery.com/jquery-3.4.0.min.js"
+    integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
+    crossorigin="anonymous"></script>
+    <script src="/path/pagination.js"></script>
 ```
 - Pagination 객체를 생성한다. new Pagination($rootElement, activeClassName, callbackFunction)
 ```
