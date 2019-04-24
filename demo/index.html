@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>jQuery pagination demo</title>
+  <style>
+    ul,
+    li {
+      list-style: none;
+    }
+    #pagination {
+      display: flex;
+    }
+    li {
+      text-align: center;
+      width: 30px;
+      border-top: 1px solid black;
+      border-left: 1px solid black;
+      border-bottom: 1px solid black;
+    }
+    li:last-child {
+      border-right: 1px solid black;
+    }
+    .active {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+    <ul id="pagination" class="paging_group">
+        <li class="page_start"><<</li>
+        <li class="page_prev"><</li>
+        <li class="paging-group-item"><span class="page active" page="1">1</span></li>
+        <li class="page_next">></li>
+        <li class="page_end">>></li>
+    </ul>
+    <script
+    src="https://code.jquery.com/jquery-3.4.0.min.js"
+    integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
+    crossorigin="anonymous"></script>
+    <script src="pagination.js"></script>
+    <script>
+      function render() {
+        // 페이징 요청 후 클라이언트사이드 렌더링 진행 
+      }
+
+      var pagination = new Pagination($("#pagination"), "active", render);
+      pagination.reset({
+        end_flag: "N",
+        end_page: "10",
+        max_page: "540",
+        min_page: "1",
+        per_page: "10",
+        start_page: "1",
+        total_count: "5399"
+      });
+
+    </script>
+</div>
+</body>
+</html>
