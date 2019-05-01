@@ -42,8 +42,11 @@
     crossorigin="anonymous"></script>
     <script src="pagination.js"></script>
     <script>
-      function render() {
+      function render(data) {
         // 페이징 요청 후 클라이언트사이드 렌더링 진행 
+
+        // 필요에 따라 최대 페이지를 갱신해준다.
+        // $("#pagination").data("maxPage", max_page);
       }
 
       var pagination = new Pagination($("#pagination"), "active", render);

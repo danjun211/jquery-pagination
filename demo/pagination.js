@@ -7,7 +7,7 @@
  * 페이징 속성: page
  */
 
-var Pagination = (function($){
+var Pagination = (function($, Handlebars){
 
 	function Pagination(rootEle, activeClassName, ajaxCallback) {
 		this.$root			 = $(rootEle);
@@ -30,15 +30,23 @@ var Pagination = (function($){
 		this.$root.on("click", ".page_start", this.start.bind(this));
 		this.$root.on("click", ".page_end", this.end.bind(this));
 	}
+	Pagination.prototype.set = function(pagingObj) {
+		this.activePage = (typeof pagingObj !== "undefined" && pagingObj["page"])? parseInt(pagingObj["page"]) : 1;
+		this.minPage	= (typeof pagingObj !== "undefined" && pagingObj["min_page"])? parseInt(pagingObj["min_page"]) : 1;
+		this.maxPage	= (typeof pagingObj !== "undefined" && pagingObj["max_page"])? parseInt(pagingObj["max_page"]) : 1;
+		this.startPage	= (typeof pagingObj !== "undefined" && pagingObj["start_page"])? parseInt(pagingObj["start_page"]) : 1;
+		this.endPage	= (typeof pagingObj !== "undefined" && pagingObj["end_page"])? parseInt(pagingObj["end_page"]) : 1;
+		this.perPage	= (typeof pagingObj !== "undefined" && pagingObj["per_page"])? parseInt(pagingObj["per_page"]) : 1;
+	}
 	Pagination.prototype.reset = function(pagingObj) {
 		//{min_page,max_page,start_page,end_page,per_page}
 
-		this.activePage = 1;
-		this.minPage	= parseInt(pagingObj["min_page"]);
-		this.maxPage	= parseInt(pagingObj["max_page"]);
-		this.startPage	= parseInt(pagingObj["start_page"]);
-		this.endPage	= parseInt(pagingObj["end_page"]);
-		this.perPage	= parseInt(pagingObj["per_page"]);
+		this.activePage = (typeof pagingObj !== "undefined" && pagingObj["page"])? parseInt(pagingObj["page"]) : 1;
+		this.minPage	= (typeof pagingObj !== "undefined" && pagingObj["min_page"])? parseInt(pagingObj["min_page"]) : 1;
+		this.maxPage	= (typeof pagingObj !== "undefined" && pagingObj["max_page"])? parseInt(pagingObj["max_page"]) : 1;
+		this.startPage	= (typeof pagingObj !== "undefined" && pagingObj["start_page"])? parseInt(pagingObj["start_page"]) : 1;
+		this.endPage	= (typeof pagingObj !== "undefined" && pagingObj["end_page"])? parseInt(pagingObj["end_page"]) : 1;
+		this.perPage	= (typeof pagingObj !== "undefined" && pagingObj["per_page"])? parseInt(pagingObj["per_page"]) : 1;
 
 		var $pagingGroupItems = this.$root.find(".paging-group-item");
 		var $firstPagingGroupItem = $pagingGroupItems.eq(0);
@@ -50,7 +58,7 @@ var Pagination = (function($){
 
 			$(tempPagingGroupItem).find(".page").attr("page", page);
 			$(tempPagingGroupItem).find(".page").text(page);
-			if(page === this.startPage) $(tempPagingGroupItem).find(".page").addClass(this.activeClassName);
+			if(page === this.activePage) $(tempPagingGroupItem).find(".page").addClass(this.activeClassName);
 
 			$firstPagingGroupItem.before(tempPagingGroupItem);
 		}
@@ -141,6 +149,7 @@ var Pagination = (function($){
 			this.activePage = 1;
 			this.$root.find("." + this.activeClassName).removeClass(this.activeClassName);
 			this.$root.find(".page[page=" + this.activePage +"]").addClass(this.activeClassName);
+			this.ajaxCallback.call(this, this.activePage).then(this.updateMaxPage.bind(this));
 			return;
 		}
 
@@ -196,4 +205,4 @@ var Pagination = (function($){
 	
 	return Pagination;
 
-})(jQuery);
+})(jQuery, Handlebars);
