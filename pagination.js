@@ -7,7 +7,7 @@
  * 페이징 속성: page
  */
 
-var Pagination = (function($, Handlebars){
+var Pagination = (function($){
 
 	function Pagination(rootEle, activeClassName, ajaxCallback) {
 		this.$root			 = $(rootEle);
@@ -205,4 +205,4 @@ var Pagination = (function($, Handlebars){
 	
 	return Pagination;
 
-})(jQuery, Handlebars);
+})(jQuery);
