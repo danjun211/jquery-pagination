@@ -81,17 +81,12 @@ var Pagination = (function($){
 		} else {
 			this.perPage = 10;
 			this.$root.data("perPage", this.perPage);
-		}  
-		this.activePage = (typeof pagingObj !== "undefined" && typeof pagingObj["page"] !== "undefined" )? parseInt(pagingObj["page"]) : 1;
-		this.minPage	= (typeof pagingObj !== "undefined" && typeof pagingObj["min_page"] !== "undefined" )? parseInt(pagingObj["min_page"]) : 1;
-		this.maxPage	= (typeof pagingObj !== "undefined" && typeof pagingObj["max_page"] !== "undefined" )? parseInt(pagingObj["max_page"]) : 1;
-		this.startPage	= (typeof pagingObj !== "undefined" && typeof pagingObj["start_page"] !== "undefined" )? parseInt(pagingObj["start_page"]) : 1;
-		this.endPage	= (typeof pagingObj !== "undefined" && typeof pagingObj["end_page"] !== "undefined" )? parseInt(pagingObj["end_page"]) : 1;
-		this.perPage	= (typeof pagingObj !== "undefined" && typeof pagingObj["per_page"] !== "undefined" )? parseInt(pagingObj["per_page"]) : 1;
+		}
 	}
 	// 페이징 초기화
 	Pagination.prototype.reset = function(pagingObj) {
 		this.set(pagingObj);
+		debugger;
 		this.setPaging();
 	}
 	Pagination.prototype.updateMaxPage = function() {
