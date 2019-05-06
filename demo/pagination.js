@@ -2,80 +2,124 @@
  * @author LeeJunyeol
  * 
  * 숫자 페이징 클래스: paging-group-item
- * 이전 페이지 버튼 클래스: page_prev
- * 다음 페이지 버튼 클래스: page_next
+ * 이전 페이지 버튼 클래스: page-prev
+ * 다음 페이지 버튼 클래스: page-next
+ * 이전구간 페이지 버튼 클래스: page-start
+ * 다음구간 페이지 버튼 클래스: page-end
  * 페이징 속성: page
  */
 
 var Pagination = (function($){
 
-	function Pagination(rootEle, activeClassName, ajaxCallback) {
+	function Pagination(rootEle, activeClassName, ajaxCallback, pagingObj) {
 		this.$root			 = $(rootEle);
 		this.activeClassName = activeClassName || "active";
-		this.activePage      = parseInt($(rootEle).find("." + this.activeClassName).attr("page")) || 1;
 		this.ajaxCallback    = (ajaxCallback && typeof ajaxCallback === "function")? ajaxCallback : function() {};
-
-		this.minPage         = this.$root.data("minPage");
-		this.maxPage         = this.$root.data("maxPage");
-		this.startPage       = this.$root.data("startPage");
-		this.endPage         = this.$root.data("endPage");
-		this.perPage         = this.$root.data("perPage");
+		
+		this.set(pagingObj);
 
 		this.$root.on("click", ".page", function(e) {
-
 			this.moveTo($(e.currentTarget).attr("page"));
 		}.bind(this));
-		this.$root.on("click", ".page_prev", this.prev.bind(this));
-		this.$root.on("click", ".page_next", this.next.bind(this));
-		this.$root.on("click", ".page_start", this.start.bind(this));
-		this.$root.on("click", ".page_end", this.end.bind(this));
+		this.$root.on("click", ".page-prev", this.prev.bind(this));
+		this.$root.on("click", ".page-next", this.next.bind(this));
+		this.$root.on("click", ".page-start", this.start.bind(this));
+		this.$root.on("click", ".page-end", this.end.bind(this));
 	}
 	Pagination.prototype.set = function(pagingObj) {
-		this.activePage = (typeof pagingObj !== "undefined" && pagingObj["page"])? parseInt(pagingObj["page"]) : 1;
-		this.minPage	= (typeof pagingObj !== "undefined" && pagingObj["min_page"])? parseInt(pagingObj["min_page"]) : 1;
-		this.maxPage	= (typeof pagingObj !== "undefined" && pagingObj["max_page"])? parseInt(pagingObj["max_page"]) : 1;
-		this.startPage	= (typeof pagingObj !== "undefined" && pagingObj["start_page"])? parseInt(pagingObj["start_page"]) : 1;
-		this.endPage	= (typeof pagingObj !== "undefined" && pagingObj["end_page"])? parseInt(pagingObj["end_page"]) : 1;
-		this.perPage	= (typeof pagingObj !== "undefined" && pagingObj["per_page"])? parseInt(pagingObj["per_page"]) : 1;
+		if(typeof pagingObj !== "undefined" && typeof pagingObj["page"] !== "undefined") {
+			this.activePage = parseInt(pagingObj["page"]);
+			this.$root.find(".page").attr("page", this.activePage);
+		} else if(typeof this.$root.find("." + this.activeClassName).attr("page") !== "undefined") {
+			this.activePage = parseInt(this.$root.find("." + this.activeClassName).attr("page"));
+		} else {
+			this.activePage = 1;
+			this.$root.find(".page").attr("page", this.activePage);
+		}  
+		if(typeof pagingObj !== "undefined" && typeof pagingObj["minPage"] !== "undefined") {
+			this.minPage = parseInt(pagingObj["minPage"]);
+			this.$root.data("minPage", this.minPage);
+		} else if(typeof this.$root.data("minPage") !== "undefined") {
+			this.minPage = this.$root.data("minPage");
+		} else {
+			this.minPage = 1;
+			this.$root.data("minPage", this.minPage);
+		}  
+		if(typeof pagingObj !== "undefined" && typeof pagingObj["maxPage"] !== "undefined") {
+			this.maxPage = parseInt(pagingObj["maxPage"]);
+			this.$root.data("maxPage", this.maxPage);
+		} else if(typeof this.$root.data("maxPage") !== "undefined") {
+			this.maxPage = this.$root.data("maxPage");
+		} else {
+			this.maxPage = 1;
+			this.$root.data("maxPage", this.maxPage);
+		}  
+		if(typeof pagingObj !== "undefined" && typeof pagingObj["startPage"] !== "undefined") {
+			this.startPage = parseInt(pagingObj["startPage"]);
+			this.$root.data("startPage", this.startPage);
+		} else if(typeof this.$root.data("startPage") !== "undefined") {
+			this.startPage = this.$root.data("startPage");
+		} else {
+			this.startPage = 1;
+			this.$root.data("startPage", this.startPage);
+		}  
+		if(typeof pagingObj !== "undefined" && typeof pagingObj["endPage"] !== "undefined") {
+			this.endPage = parseInt(pagingObj["endPage"]);
+			this.$root.data("endPage", this.endPage);
+		} else if(typeof this.$root.data("endPage") !== "undefined") {
+			this.endPage = this.$root.data("endPage");
+		} else {
+			this.endPage = 1;
+			this.$root.data("endPage", this.endPage);
+		}  
+		if(typeof pagingObj !== "undefined" && typeof pagingObj["perPage"] !== "undefined") {
+			this.perPage = parseInt(pagingObj["perPage"]);
+			this.$root.data("perPage", this.perPage);
+		} else if(typeof this.$root.data("perPage") !== "undefined") {
+			this.perPage = this.$root.data("perPage");
+		} else {
+			this.perPage = 10;
+			this.$root.data("perPage", this.perPage);
+		}  
+		this.activePage = (typeof pagingObj !== "undefined" && typeof pagingObj["page"] !== "undefined" )? parseInt(pagingObj["page"]) : 1;
+		this.minPage	= (typeof pagingObj !== "undefined" && typeof pagingObj["min_page"] !== "undefined" )? parseInt(pagingObj["min_page"]) : 1;
+		this.maxPage	= (typeof pagingObj !== "undefined" && typeof pagingObj["max_page"] !== "undefined" )? parseInt(pagingObj["max_page"]) : 1;
+		this.startPage	= (typeof pagingObj !== "undefined" && typeof pagingObj["start_page"] !== "undefined" )? parseInt(pagingObj["start_page"]) : 1;
+		this.endPage	= (typeof pagingObj !== "undefined" && typeof pagingObj["end_page"] !== "undefined" )? parseInt(pagingObj["end_page"]) : 1;
+		this.perPage	= (typeof pagingObj !== "undefined" && typeof pagingObj["per_page"] !== "undefined" )? parseInt(pagingObj["per_page"]) : 1;
 	}
 	Pagination.prototype.reset = function(pagingObj) {
-		//{min_page,max_page,start_page,end_page,per_page}
-
-		this.activePage = (typeof pagingObj !== "undefined" && pagingObj["page"])? parseInt(pagingObj["page"]) : 1;
-		this.minPage	= (typeof pagingObj !== "undefined" && pagingObj["min_page"])? parseInt(pagingObj["min_page"]) : 1;
-		this.maxPage	= (typeof pagingObj !== "undefined" && pagingObj["max_page"])? parseInt(pagingObj["max_page"]) : 1;
-		this.startPage	= (typeof pagingObj !== "undefined" && pagingObj["start_page"])? parseInt(pagingObj["start_page"]) : 1;
-		this.endPage	= (typeof pagingObj !== "undefined" && pagingObj["end_page"])? parseInt(pagingObj["end_page"]) : 1;
-		this.perPage	= (typeof pagingObj !== "undefined" && pagingObj["per_page"])? parseInt(pagingObj["per_page"]) : 1;
-
+		this.set(pagingObj);
+		this.setPaging();
+	}
+	Pagination.prototype.updateMaxPage = function() {
+		this.maxPage         = parseInt(this.$root.data("maxPage"));
+	}
+	Pagination.prototype.setPaging	= function() {
 		var $pagingGroupItems = this.$root.find(".paging-group-item");
-		var $firstPagingGroupItem = $pagingGroupItems.eq(0);
-		$firstPagingGroupItem.find(".page").removeClass(this.activeClassName);
+		var $pagingGroupItem = $pagingGroupItems.eq(0);
+		$pagingGroupItem.find(".page").removeClass(this.activeClassName);
 
-		var tempPagingGroupItem;
+		var $page = null; 
 		for(var page = this.startPage, i = 0; page <= this.endPage; page++, i++) {
-			var tempPagingGroupItem = $firstPagingGroupItem.clone();
-
-			$(tempPagingGroupItem).find(".page").attr("page", page);
-			$(tempPagingGroupItem).find(".page").text(page);
-			if(page === this.activePage) $(tempPagingGroupItem).find(".page").addClass(this.activeClassName);
-
-			$firstPagingGroupItem.before(tempPagingGroupItem);
+			var tempPagingGroupItem = $pagingGroupItem.clone();
+			$page = $(tempPagingGroupItem).find(".page");
+			$page.attr("page", page);
+			$page.text(page);
+			if(page === this.startPage) $page.addClass(this.activeClassName);
+			$pagingGroupItem.before(tempPagingGroupItem);
 		}
 
 		$pagingGroupItems.each(function(i, ele) {
 			$(ele).remove();
 		});
 	}
-	Pagination.prototype.updateMaxPage = function() {
-		this.maxPage         = parseInt(this.$root.data("maxPage"));
-	}
 	Pagination.prototype.moveTo = function(page) {
 
 		this.activePage = parseInt(page);
 		this.$root.find("." + this.activeClassName).removeClass(this.activeClassName);
 		this.$root.find(".page[page=" + page +"]").addClass(this.activeClassName);
-		this.ajaxCallback.call(this, this.activePage).then(this.updateMaxPage.bind(this));
+		this.executeCallBack();
 	}
 	Pagination.prototype.next = function() {
 
@@ -86,30 +130,14 @@ var Pagination = (function($){
 			this.activePage++;
 			this.startPage = this.endPage + 1;
 			this.endPage = (this.endPage + this.perPage < this.maxPage)? this.endPage + this.perPage : this.maxPage;
-			var pagingGroupItems = this.$root.find(".paging-group-item").toArray();
-
-			var $pagingGroupItems = this.$root.find(".paging-group-item");
-			var $pagingGroupItem = $pagingGroupItems.eq(0);
-			$pagingGroupItem.find(".page").removeClass(this.activeClassName);
-
-			for(var page = this.startPage, i = 0; page <= this.endPage; page++, i++) {
-				var tempPagingGroupItem = $pagingGroupItem.clone();
-				$(tempPagingGroupItem).find(".page").attr("page", page);
-				$(tempPagingGroupItem).find(".page").text(page);
-				if(page === this.startPage) $(tempPagingGroupItem).find(".page").addClass(this.activeClassName);
-				$pagingGroupItem.before(tempPagingGroupItem);
-			}
-
-			$pagingGroupItems.each(function(i, ele) {
-				$(ele).remove();
-			});
-
+	
+			this.setPaging();
 		} else {
 			this.activePage++;
 			this.$root.find("." + this.activeClassName).removeClass(this.activeClassName);
 			this.$root.find(".page[page=" + this.activePage +"]").addClass(this.activeClassName);
 		}
-		this.ajaxCallback.call(this, this.activePage).then(this.updateMaxPage.bind(this));
+		this.executeCallBack();
 	}
 	Pagination.prototype.prev = function() {
 		if(this.activePage === this.minPage) {
@@ -122,56 +150,31 @@ var Pagination = (function($){
 			this.endPage = this.startPage - 1;
 			this.startPage = (this.startPage - this.perPage > this.minPage)? this.startPage - this.perPage : this.minPage;
 
-			var $pagingGroupItems = this.$root.find(".paging-group-item");
-			var $pagingGroupItem = $pagingGroupItems.eq(0);
-			$pagingGroupItem.find(".page").removeClass(this.activeClassName);
-
-			for(var page = this.startPage, i = 0; page <= this.endPage; page++, i++) {
-				var tempPagingGroupItem = $pagingGroupItem.clone();
-				$(tempPagingGroupItem).find(".page").attr("page", page);
-				$(tempPagingGroupItem).find(".page").text(page);
-				if(page === this.endPage) $(tempPagingGroupItem).find(".page").addClass(this.activeClassName);
-				$pagingGroupItem.before(tempPagingGroupItem);
-			}
-
-			$pagingGroupItems.each(function(i, ele) {
-				$(ele).remove();
-			});
+			this.setPaging();
 		} else {
 			this.activePage--;
 			this.$root.find("." + this.activeClassName).removeClass(this.activeClassName);
 			this.$root.find(".page[page=" + this.activePage +"]").addClass(this.activeClassName);
 		}
-		this.ajaxCallback.call(this, this.activePage).then(this.updateMaxPage.bind(this));
+	}
+	Pagination.prototype.executeCallBack = function() {
+		var thenable = this.ajaxCallback.call(this, this.activePage);
+		typeof thenable !== "undefined" && typeof thenable.then === 'function' && thenable.then(this.updateMaxPage.bind(this));
 	}
 	Pagination.prototype.start = function() {
 		if(this.startPage - 1 <= 0) {
 			this.activePage = 1;
 			this.$root.find("." + this.activeClassName).removeClass(this.activeClassName);
 			this.$root.find(".page[page=" + this.activePage +"]").addClass(this.activeClassName);
-			this.ajaxCallback.call(this, this.activePage).then(this.updateMaxPage.bind(this));
+			this.executeCallBack();
 			return;
 		}
 
 		this.activePage = this.endPage = this.startPage - 1;
 		this.startPage = (this.startPage - this.perPage > this.minPage)? this.startPage - this.perPage : this.minPage;
 
-		var $pagingGroupItems = this.$root.find(".paging-group-item");
-		var $pagingGroupItem = $pagingGroupItems.eq(0);
-		$pagingGroupItem.find(".page").removeClass(this.activeClassName);
-
-		for(var page = this.startPage, i = 0; page <= this.endPage; page++, i++) {
-			var tempPagingGroupItem = $pagingGroupItem.clone();
-			$(tempPagingGroupItem).find(".page").attr("page", page);
-			$(tempPagingGroupItem).find(".page").text(page);
-			if(page === this.endPage) $(tempPagingGroupItem).find(".page").addClass(this.activeClassName);
-			$pagingGroupItem.before(tempPagingGroupItem);
-		}
-
-		$pagingGroupItems.each(function(i, ele) {
-			$(ele).remove();
-		});
-		this.ajaxCallback.call(this, this.activePage).then(this.updateMaxPage.bind(this));
+		this.setPaging();
+		this.executeCallBack();
 	}
 	Pagination.prototype.end = function() {
 		if(this.endPage + 1 >= this.maxPage) {
@@ -181,26 +184,11 @@ var Pagination = (function($){
 		} else {
 			this.activePage = this.startPage = this.endPage + 1;
 			this.endPage = (this.endPage + this.perPage < this.maxPage)? this.endPage + this.perPage : this.maxPage;
-			var pagingGroupItems = this.$root.find(".paging-group-item").toArray();
-	
-			var $pagingGroupItems = this.$root.find(".paging-group-item");
-			var $pagingGroupItem = $pagingGroupItems.eq(0);
-			$pagingGroupItem.find(".page").removeClass(this.activeClassName);
-	
-			for(var page = this.startPage, i = 0; page <= this.endPage; page++, i++) {
-				var tempPagingGroupItem = $pagingGroupItem.clone();
-				$(tempPagingGroupItem).find(".page").attr("page", page);
-				$(tempPagingGroupItem).find(".page").text(page);
-				if(page === this.startPage) $(tempPagingGroupItem).find(".page").addClass(this.activeClassName);
-				$pagingGroupItem.before(tempPagingGroupItem);
-			}
-	
-			$pagingGroupItems.each(function(i, ele) {
-				$(ele).remove();
-			});
+
+			this.setPaging();
 		}
 
-		this.ajaxCallback.call(this, this.activePage).then(this.updateMaxPage.bind(this));
+		this.executeCallBack();
 	}
 	
 	return Pagination;
