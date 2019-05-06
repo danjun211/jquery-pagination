@@ -88,7 +88,6 @@ var Pagination = (function($){
 	// 페이징 초기화
 	Pagination.prototype.reset = function(pagingObj) {
 		this.set(pagingObj);
-		debugger;
 		this.setPaging();
 	}
 	Pagination.prototype.updateMaxPage = function() {
