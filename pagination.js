@@ -16,8 +16,7 @@ var Pagination = (function($){
 		this.activeClassName = activeClassName || "active";
 		this.ajaxCallback    = (ajaxCallback && typeof ajaxCallback === "function")? ajaxCallback : function() {};
 		
-		this.set(pagingObj);
-		this.reset();
+		this.reset(pagingObj);
 
 		this.$root.on("click", ".page", function(e) {
 			this.moveTo($(e.currentTarget).attr("page"));
