@@ -16,7 +16,7 @@ var Pagination = (function($){
 		this.activeClassName = activeClassName || "active";
 		this.ajaxCallback    = (ajaxCallback && typeof ajaxCallback === "function")? ajaxCallback : function() {};
 		
-		this.set(pagingObj);
+		this.reset(pagingObj);
 
 		this.$root.on("click", ".page", function(e) {
 			this.moveTo($(e.currentTarget).attr("page"));
@@ -26,6 +26,7 @@ var Pagination = (function($){
 		this.$root.on("click", ".page-start", this.start.bind(this));
 		this.$root.on("click", ".page-end", this.end.bind(this));
 	}
+	// 페이징 값 셋팅
 	Pagination.prototype.set = function(pagingObj) {
 		if(typeof pagingObj !== "undefined" && typeof pagingObj["page"] !== "undefined") {
 			this.activePage = parseInt(pagingObj["page"]);
@@ -88,6 +89,7 @@ var Pagination = (function($){
 		this.endPage	= (typeof pagingObj !== "undefined" && typeof pagingObj["end_page"] !== "undefined" )? parseInt(pagingObj["end_page"]) : 1;
 		this.perPage	= (typeof pagingObj !== "undefined" && typeof pagingObj["per_page"] !== "undefined" )? parseInt(pagingObj["per_page"]) : 1;
 	}
+	// 페이징 초기화
 	Pagination.prototype.reset = function(pagingObj) {
 		this.set(pagingObj);
 		this.setPaging();
@@ -95,6 +97,7 @@ var Pagination = (function($){
 	Pagination.prototype.updateMaxPage = function() {
 		this.maxPage         = parseInt(this.$root.data("maxPage"));
 	}
+	// 페이징 그리기
 	Pagination.prototype.setPaging	= function() {
 		var $pagingGroupItems = this.$root.find(".paging-group-item");
 		var $pagingGroupItem = $pagingGroupItems.eq(0);
@@ -114,6 +117,7 @@ var Pagination = (function($){
 			$(ele).remove();
 		});
 	}
+	// 특정 페이지로 이동
 	Pagination.prototype.moveTo = function(page) {
 
 		this.activePage = parseInt(page);
@@ -121,6 +125,7 @@ var Pagination = (function($){
 		this.$root.find(".page[page=" + page +"]").addClass(this.activeClassName);
 		this.executeCallBack();
 	}
+	// 다음 페이지로
 	Pagination.prototype.next = function() {
 
 		if(this.activePage === this.maxPage) {
@@ -139,6 +144,7 @@ var Pagination = (function($){
 		}
 		this.executeCallBack();
 	}
+	// 이전 페이지로
 	Pagination.prototype.prev = function() {
 		if(this.activePage === this.minPage) {
 			return;
@@ -157,10 +163,12 @@ var Pagination = (function($){
 			this.$root.find(".page[page=" + this.activePage +"]").addClass(this.activeClassName);
 		}
 	}
+	// 콜백 함수 실행
 	Pagination.prototype.executeCallBack = function() {
 		var thenable = this.ajaxCallback.call(this, this.activePage);
 		typeof thenable !== "undefined" && typeof thenable.then === 'function' && thenable.then(this.updateMaxPage.bind(this));
 	}
+	// 이전 페이지 구간으로 이동
 	Pagination.prototype.start = function() {
 		if(this.startPage - 1 <= 0) {
 			this.activePage = 1;
@@ -176,6 +184,7 @@ var Pagination = (function($){
 		this.setPaging();
 		this.executeCallBack();
 	}
+	// 다음 페이지 구간으로 이동
 	Pagination.prototype.end = function() {
 		if(this.endPage + 1 >= this.maxPage) {
 			this.activePage = this.endPage;
