@@ -15,6 +15,8 @@ var Pagination = (function($){
 		this.$root			 = $(rootEle);
 		this.activeClassName = activeClassName || "active";
 		this.ajaxCallback    = (ajaxCallback && typeof ajaxCallback === "function")? ajaxCallback : function() {};
+
+		this.VERSION = "1.0.0";
 		
 		this.reset(pagingObj);
 
